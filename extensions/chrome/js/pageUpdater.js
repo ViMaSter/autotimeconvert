@@ -161,12 +161,14 @@ function DateContainer() {
 
 	this.IsPM = "";
 	this.TimeZone = "";
-};
-
-var Times = [];
+}
 
 function Convert(stringTested, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
 	var value = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10];
+
+	if (value == null || value.length <= 0) {
+		return;
+	}
 
 	var constructedNumber = new DateContainer();
 
@@ -235,19 +237,27 @@ function Convert(stringTested, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
 		newTimeFormat += " of the next day";
 	}
 
-	Times.push(constructedNumber);
-
 	return '<abbr class="convertedTime" title="' + newTimeFormat + '">' + stringTested + '</abbr>';
 }
 
-function ParsePage() {
-	$("body").children().each(function () {
-	    $(this).html( $(this).html().replace(TimeExpression, Convert) );
-	});
+function ConvertElement() {
+	return this.nodeValue.replace(TimeExpression, Convert);
+}
+
+function ParsePage(element) {
+	$(element).contents().filter(function() {
+		if ($(this.parentNode).hasClass("convertedTime")) {
+			return false;
+		}
+
+		return this.nodeType === 3;
+	}).replaceWith(ConvertElement);
 }
 
 function UpdatePage() {
-	ParsePage();
+	ParsePage("body");
 }
 
-UpdatePage();
+document.documentElement.addEventListener("mouseover", function (e) {
+	ParsePage(e.target);
+});
