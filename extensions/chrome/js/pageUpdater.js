@@ -241,7 +241,9 @@ function Convert(stringTested, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
 }
 
 function ConvertElement() {
-	return this.nodeValue.replace(TimeExpression, Convert);
+	if (this.nodeValue != this.nodeValue.replace(TimeExpression, Convert)) {
+		return this.nodeValue.replace(TimeExpression, Convert);
+	}
 }
 
 function ParsePage(element) {
@@ -250,7 +252,13 @@ function ParsePage(element) {
 			return false;
 		}
 
-		return this.nodeType === 3;
+		if (this.nodeType === 3) {
+			if (this.nodeValue != this.nodeValue.replace(TimeExpression, Convert)) {
+				return true;
+			}
+		}
+
+		return false;
 	}).replaceWith(ConvertElement);
 }
 
