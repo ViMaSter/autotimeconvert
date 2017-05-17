@@ -151,7 +151,7 @@ return((r[1].length===0)?r[0]:null);};$D.getParseFunction=function(fx){var fn=$D
 return((r[1].length===0)?r[0]:null);};};$D.parseExact=function(s,fx){return $D.getParseFunction(fx)(s);};}());
 
 // Custom code
-var TimeExpression = /(\d+)(?:[.: ](\d\d))*\s*([aApP][.: ]?[mM][.: ]?)[ \[(]?([a-zA-Z]{3})[)\]]?/g;
+var TimeExpression = /(\d+)(?:[.: ](\d\d))*\s*([aApP][.: ]?[mM][.: ]?)[ \[(]?([a-zA-Z]{3})?/g;
 
 function DateContainer() {
 	this.Hours = 0;
@@ -221,20 +221,15 @@ function Convert(stringTested, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
 	}
 
 	var newTimeFormat = date.toString("HH:mm:ss");
-	if (stringTested.indexOf("(") == 0) {
-		newTimeFormat = "(" + newTimeFormat;
-	}
-
-	if ((stringTested.indexOf(")") == stringTested.length-1) && stringTested.indexOf("(") == -1) {
-		newTimeFormat += ")";
-	}
-
 	var today = new Date().setHours(0,0,0,0);
 	if (date.setHours(0,0,0,0) < today) {
 		newTimeFormat += " of the previous day";
 	}
 	else if (date.setHours(0,0,0,0) > today) {
 		newTimeFormat += " of the next day";
+	}
+	else {
+		newTimeFormat += " of the same day";
 	}
 
 	return '<abbr class="convertedTime" title="' + newTimeFormat + '">' + stringTested + '</abbr>';
